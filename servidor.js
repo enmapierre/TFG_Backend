@@ -6,6 +6,7 @@ const Producto = require ("./models/producto.model")
 const app = express()
 
 const mongoose = require("mongoose")
+const producto = require("./models/producto.model")
 mongoose.connect("mongodb+srv://enmapiedrafernandez:ht9mH1W9T69DzjpH@cluster0.iggszwx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 .then(()=>console.log("Conectado bbdd"))
 
@@ -34,6 +35,21 @@ app.get("/productos/bisuteria",(req,res) => { //end-point
 
 app.get("/productos/summer",(req,res) => { //end-point
     Producto.find({category:"summer"}).then(productos=>res.json(productos))
+})
+
+app.put("/productos/:id",(req,res) => {
+    const {id}=req.params
+    const UpDateProduct = req.body
+    try{
+        const UpDatedProducto = Producto.findIdAndUpdate(id,UpDateProduct,{new : true})
+        if (!UpDatedProducto){
+            return res.status(404).json({message: "Error proucto no encontrado"})
+        }
+        res.json(UpDatedProducto)
+    }catch(err){
+        console.error(err)
+        res.status(500).json({message:"Error al actualizar producto"})
+    }
 })
 
 
