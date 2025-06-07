@@ -10,7 +10,7 @@ const producto = require("./models/producto.model")
 mongoose.connect("mongodb+srv://enmapiedrafernandez:ht9mH1W9T69DzjpH@cluster0.iggszwx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 .then(()=>console.log("Conectado bbdd"))
 
-
+app.use(express.json())
 app.listen(8080, ()=> console.log ('Servidor levantado'))
 
 
@@ -37,11 +37,12 @@ app.get("/productos/summer",(req,res) => { //end-point
     Producto.find({category:"summer"}).then(productos=>res.json(productos))
 })
 
-app.put("/productos/:id",(req,res) => {
+app.put("/productos/:id",async(req,res) => {
     const {id}=req.params
+
     const UpDateProduct = req.body
     try{
-        const UpDatedProducto = Producto.findIdAndUpdate(id,UpDateProduct,{new : true})
+        const UpDatedProducto = await Producto.findByIdAndUpdate(id,UpDateProduct,{new : true})
         if (!UpDatedProducto){
             return res.status(404).json({message: "Error proucto no encontrado"})
         }
